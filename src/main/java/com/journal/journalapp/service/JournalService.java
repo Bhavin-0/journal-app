@@ -2,6 +2,7 @@ package com.journal.journalapp.service;
 
 import com.journal.journalapp.model.JournalEntry;
 import com.journal.journalapp.repository.JournalEntryRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Optional;
 
 //Business logic
 //tolks to the database
+@Service
 public class JournalService {
     private final JournalEntryRepository repository;
 
@@ -39,5 +41,10 @@ public class JournalService {
         }else{
             throw new RuntimeException("Entry with ID : "+id+" not found.");
         }
+    }
+
+    //to save a journal Entry
+    public JournalEntry save(JournalEntry entry){
+        return repository.save(entry);
     }
 }

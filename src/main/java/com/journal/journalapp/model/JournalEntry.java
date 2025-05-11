@@ -1,6 +1,7 @@
 package com.journal.journalapp.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,8 @@ public class JournalEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message="Title must not be empty")
+    @Size(max=100,message="Title must be under 100 characters")
     private String title;
 
     @Column(length = 5000)

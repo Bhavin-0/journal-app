@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController             //Makes this a REST API controller
 @RequestMapping("/journal")         //base path for all endpoints
@@ -32,6 +33,19 @@ public class JournalController {
     @GetMapping
     public ResponseEntity<List<JournalEntry>> getAllEntries(){
         return ResponseEntity.ok(journalService.getAllEntries());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<JournalEntry> updateEntry(@PathVariable Long id,@RequestBody JournalEntry entry){
+
+        return journalService.getEntryById(id)
+                .map(journal ->{
+                    journal.setTitle(entry.getTitle());
+                    journal.setContent(entry.getContent());
+                    JournalEntry updateEntry = journalService.save(journal);
+                    return ResponseEntity.ok(updateEntry);
+                }).orElse(ResponseEntity.notFound().build());
+
     }
 
     //Get a specific journal Entry by ID

@@ -3,9 +3,12 @@ package com.journal.journalapp.controller;
 //handles https requests -> returns https response
 //controller talks to the service layer
 
+import com.journal.journalapp.dto.JournalEntryDTO;
 import com.journal.journalapp.model.JournalEntry;
 import com.journal.journalapp.service.JournalService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,25 +26,25 @@ public class JournalController {
     }
 
     //create new journal Entry
-    @PostMapping
-    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry entry){
-        JournalEntry created = journalService.createEntry(entry.getTitle(),entry.getContent());
-        return ResponseEntity.ok(created);
+    @PostMapping("/entries")
+    public ResponseEntity<JournalEntry> createEntry(@Valid @RequestBody JournalEntryDTO dto){
+        JournalEntry created = journalService.createEntry(dto.getTitle(),dto.getContent());
+        return new ResponseEntity<>(journalService.save(created), HttpStatus.CREATED);
     }
 
     //get all entries
-    @GetMapping
+    @GetMapping("/entries")
     public ResponseEntity<List<JournalEntry>> getAllEntries(){
         return ResponseEntity.ok(journalService.getAllEntries());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<JournalEntry> updateEntry(@PathVariable Long id,@RequestBody JournalEntry entry){
+    @PutMapping("/entries/{id}")
+    public ResponseEntity<JournalEntry> updateEntry(@Valid @PathVariable Long id,@RequestBody JournalEntryDTO dto){
 
         return journalService.getEntryById(id)
                 .map(journal ->{
-                    journal.setTitle(entry.getTitle());
-                    journal.setContent(entry.getContent());
+                    journal.setTitle(dto.getTitle());
+                    journal.setContent(dto.getContent());
                     JournalEntry updateEntry = journalService.save(journal);
                     return ResponseEntity.ok(updateEntry);
                 }).orElse(ResponseEntity.notFound().build());
@@ -49,7 +52,7 @@ public class JournalController {
     }
 
     //Get a specific journal Entry by ID
-    @GetMapping("/{id}")
+    @GetMapping("/entries/{id}")
     public ResponseEntity<JournalEntry> getEntryById(@PathVariable Long id){
         return journalService.getEntryById(id)
                 .map(ResponseEntity::ok)
@@ -57,7 +60,7 @@ public class JournalController {
     }
 
     //delete Entry by Id
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/entries/{id}")
     public ResponseEntity<String> deleteEntryById(@PathVariable Long id){
        try {
            journalService.deleteEntryById(id);

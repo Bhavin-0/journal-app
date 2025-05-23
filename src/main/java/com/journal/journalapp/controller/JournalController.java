@@ -39,7 +39,7 @@ public class JournalController {
     }
 
     @PutMapping("/entries/{id}")
-    public ResponseEntity<JournalEntry> updateEntry(@Valid @PathVariable Long id,@RequestBody JournalEntryDTO dto){
+    public ResponseEntity<JournalEntry> updateEntry(@Valid @PathVariable String id,@RequestBody JournalEntryDTO dto){
 
         return journalService.getEntryById(id)
                 .map(journal ->{
@@ -53,7 +53,7 @@ public class JournalController {
 
     //Get a specific journal Entry by ID
     @GetMapping("/entries/{id}")
-    public ResponseEntity<JournalEntry> getEntryById(@PathVariable Long id){
+    public ResponseEntity<JournalEntry> getEntryById(@PathVariable String id){
         return journalService.getEntryById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -61,7 +61,7 @@ public class JournalController {
 
     //delete Entry by Id
     @DeleteMapping("/entries/{id}")
-    public ResponseEntity<String> deleteEntryById(@PathVariable Long id){
+    public ResponseEntity<String> deleteEntryById(@PathVariable String id){
        try {
            journalService.deleteEntryById(id);
            return ResponseEntity.ok("Entry deleted Successfully");

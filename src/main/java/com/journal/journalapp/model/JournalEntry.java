@@ -1,24 +1,27 @@
 package com.journal.journalapp.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity //To mark this as table in database
+@Document(collection = "journalEntry")
 public class JournalEntry {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @NotBlank(message="Title must not be empty")
     @Size(max=100,message="Title must be under 100 characters")
     private String title;
 
-    @Column(length = 5000)
+
     private String content;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     //constructors
     public JournalEntry(){}
@@ -30,11 +33,11 @@ public class JournalEntry {
     }
 
     //getters and setters
-    public Long getId(){
+    public String getId(){
         return  id;
     }
 
-    public void setId(Long id){
+    public void setId(String id){
         this.id = id;
     }
 
@@ -60,5 +63,14 @@ public class JournalEntry {
 
     public void setCreatedAt(LocalDateTime createdAt){
         this.createdAt = createdAt;
+    }
+
+    public void onCreate(){
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    public void onUpdate(){
+        this.updatedAt = LocalDateTime.now();
     }
 }

@@ -2,6 +2,7 @@ package com.journal.journalapp.service;
 
 import com.journal.journalapp.model.JournalEntry;
 import com.journal.journalapp.repository.JournalEntryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -9,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 //Business logic
-//tolks to the database
+//talks to the database
 @Service
 public class JournalService {
+//    @Autowired - Assuming the instance is created by the spring and
+    @Autowired          //Dependency Injection
     private final JournalEntryRepository repository;
 
     public JournalService(JournalEntryRepository repository){
@@ -30,11 +33,11 @@ public class JournalService {
         return repository.findAll();
     }
 
-    public Optional<JournalEntry> getEntryById(Long id){
+    public Optional<JournalEntry> getEntryById(String id){
         return repository.findById(id);
     }
 
-    public void deleteEntryById(Long id){
+    public void deleteEntryById(String id){
         Optional<JournalEntry> optionalJournalEntry = repository.findById(id);
         if(optionalJournalEntry.isPresent()){
             repository.deleteById(id);
